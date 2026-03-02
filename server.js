@@ -94,6 +94,60 @@ router.route('/testcollection')
     }
     );
     
+    router.route('/movies')
+
+    // GET - No authentication required
+    .get((req, res) => {
+        res.status(200).json({
+            status: 200,
+            message: "GET movies",
+            headers: req.headers,
+            query: req.query,
+            env: process.env.UNIQUE_KEY
+        });
+    })
+
+    // POST - No authentication required
+    .post((req, res) => {
+        res.status(200).json({
+            status: 200,
+            message: "movie saved",
+            headers: req.headers,
+            query: req.query,
+            env: process.env.UNIQUE_KEY
+        });
+    })
+
+    // PUT - Requires JWT authentication
+    .put(authJwtController.isAuthenticated, (req, res) => {
+        res.status(200).json({
+            status: 200,
+            message: "movie updated",
+            headers: req.headers,
+            query: req.query,
+            env: process.env.UNIQUE_KEY
+        });
+    })
+
+    // DELETE - Requires Basic authentication
+    .delete(authController.isAuthenticated, (req, res) => {
+        res.status(200).json({
+            status: 200,
+            message: "movie deleted",
+            headers: req.headers,
+            query: req.query,
+            env: process.env.UNIQUE_KEY
+        });
+    })
+
+    // Any other HTTP method (PATCH, etc.)
+    .all((req, res) => {
+        res.status(405).json({
+            status: 405,
+            message: "HTTP method not supported."
+        });
+    });
+    
 app.use('/', router);
 app.listen(process.env.PORT || 8080);
 module.exports = app; // for testing only
